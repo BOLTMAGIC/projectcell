@@ -55,5 +55,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = 'projectcell'
 // 包含子项目
-include 'common'
 include 'forge'

@@ -69,11 +69,7 @@ subprojects {
 	base {
 		archivesName = rootProject.name
 	}
-	
-	loom {
-		silentMojangMappingsLicense()
-	}
-	
+
 	dependencies {
 		minecraft "com.mojang:minecraft:1.20.1"
 		mappings loom.officialMojangMappings()

@@ -1,7 +1,0 @@
-architectury {
-    common("forge")
-}
-
-dependencies {
-    modImplementation("dev.architectury:architectury:9.2.14")
-}
