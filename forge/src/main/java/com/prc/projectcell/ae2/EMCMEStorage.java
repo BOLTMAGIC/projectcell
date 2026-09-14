@@ -32,7 +32,7 @@ public class EMCMEStorage implements StorageCell {
    private static final Map<ItemInfo, AEItemKey> KEY_CACHE = new WeakHashMap<>();
    private static final int KEY_CACHE_MAX_SIZE = 1024;
    private static int cacheClears = 0;
-   
+
    // Pagination support for large knowledge sets
    private static final Map<String, PaginationState> PAGINATION_STATES = new WeakHashMap<>();
 
@@ -45,7 +45,7 @@ public class EMCMEStorage implements StorageCell {
    private static class PaginationState {
       KnowledgeIterator iterator;
       long lastUpdateTime;
-      
+
       PaginationState(KnowledgeIterator iterator) {
          this.iterator = iterator;
          this.lastUpdateTime = System.currentTimeMillis();
@@ -131,19 +131,23 @@ public class EMCMEStorage implements StorageCell {
     }
 
     private static boolean isBlocked(AEItemKey key) {
-       // Check cache first
-       Boolean cached = NBTDecisionCache.getCachedBlockStatus(key);
-       if (cached != null) {
-          return cached;
-       }
-       
-       // Cache miss - compute result
-       boolean blocked = hasBlockedNbt(key) || hasNonPersistentNbt(key);
-       
-       // Store in cache
-       NBTDecisionCache.cacheBlockStatus(key, blocked);
-       
-       return blocked;
+        // Check cache first
+        Boolean cached = NBTDecisionCache.getCachedBlockStatus(key);
+        if (cached != null) {
+           return cached;
+        }
+
+        // Cache miss - compute result
+        boolean blocked = hasBlockedNbt(key) || hasNonPersistentNbt(key);
+
+        // Store in cache
+        NBTDecisionCache.cacheBlockStatus(key, blocked);
+
+        return blocked;
+     }
+
+    public static boolean isBlockedPublic(AEItemKey key) {
+        return isBlocked(key);
     }
 
    public EMCMEStorage(UUID owner, boolean nbtFilter, ISaveProvider host) {
@@ -217,7 +221,7 @@ public class EMCMEStorage implements StorageCell {
         if (!(what instanceof AEItemKey itemKey) || amount <= 0L) {
            return 0L;
         }
-        if (this.nbtFilter && hasBlockedNbt(itemKey)) {
+        if (this.nbtFilter && isBlocked(itemKey)) {
            return 0L;
         }
 
@@ -228,7 +232,7 @@ public class EMCMEStorage implements StorageCell {
         if (itemValue <= 0L) {
            return 0L;
         }
-        
+
         ItemInfo persistent = IEMCProxy.INSTANCE.getPersistentInfo(info);
         if (!ItemStack.isSameItemSameTags(stack, persistent.createStack())) {
            return 0L;
@@ -238,18 +242,18 @@ public class EMCMEStorage implements StorageCell {
         if (provider == null || !provider.hasKnowledge(stack)) {
            return 0L;
         }
-        
+
         BigInteger playerEmc = provider.getEmc();
-        
+
         // Optimization: use safe long arithmetic instead of BigInteger division
         long maxExtractFromValue = SafeLongArithmetic.safeDivide(playerEmc, itemValue);
         long extractAmount = Math.min(maxExtractFromValue, amount);
         extractAmount = Math.min(extractAmount, limit());
-        
+
         if (extractAmount <= 0L) {
            return 0L;
         }
-        
+
         if (mode == Actionable.MODULATE) {
            BigInteger totalCost = BigInteger.valueOf(itemValue).multiply(BigInteger.valueOf(extractAmount));
            provider.setEmc(playerEmc.subtract(totalCost));
@@ -266,7 +270,7 @@ public class EMCMEStorage implements StorageCell {
         if (provider != null) {
            BigInteger playerEmc = provider.getEmc();
            long lim = limit();
-           
+
            // Fast path: if player has no EMC, return empty
            if (playerEmc.signum() <= 0) {
               return;
@@ -295,7 +299,7 @@ public class EMCMEStorage implements StorageCell {
               if (blocked) {
                  continue;
               }
-              
+
               // Calculate available count using safe arithmetic
               long maxCount = SafeLongArithmetic.safeDivide(playerEmc, itemValue);
               if (maxCount <= 0L) {
@@ -313,3 +317,4 @@ public class EMCMEStorage implements StorageCell {
       return Component.translatable("projectcell.ae2.emc_storage_description");
    }
 }
+

@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.Mod;
 import com.prc.projectcell.ae2.StorageQueryBatcher;
 import com.prc.projectcell.ae2.EMCValueCache;
 import com.prc.projectcell.ae2.NBTDecisionCache;
+import com.prc.projectcell.ae2.KnowledgeSnapshot;
 
 /**
  * Server tick event listener for batch processing and cache maintenance.
@@ -14,6 +15,7 @@ import com.prc.projectcell.ae2.NBTDecisionCache;
  * - Storage query batch processing
  * - Periodic cache clearing
  * - Thread pool monitoring
+ * - Knowledge snapshot tick updates
  */
 @Mod.EventBusSubscriber(modid = "projectcell", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerTickEventListener {
@@ -24,6 +26,9 @@ public class ServerTickEventListener {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
+
+        // CRITICAL: Update knowledge snapshot tick counter (enables cache invalidation)
+        KnowledgeSnapshot.updateTick();
 
         // Process batched queries
         StorageQueryBatcher.processBatch();
@@ -41,4 +46,3 @@ public class ServerTickEventListener {
         }
     }
 }
-

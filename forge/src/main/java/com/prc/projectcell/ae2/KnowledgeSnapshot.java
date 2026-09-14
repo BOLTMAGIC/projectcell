@@ -111,8 +111,8 @@ public class KnowledgeSnapshot {
                 continue;
             }
 
-            // 3. Check blocked status ONCE (uses cached decision)
-            boolean blocked = nbtFilter && NBTDecisionCache.getCachedBlockStatus(key) != null && NBTDecisionCache.getCachedBlockStatus(key);
+            // 3. Check blocked status ONCE - properly compute if not cached
+            boolean blocked = nbtFilter && EMCMEStorage.isBlockedPublic(key);
 
             // Store all computed data
             itemData.put(info, new ComputedItemData(key, emcValue, blocked));
@@ -153,4 +153,3 @@ public class KnowledgeSnapshot {
         return String.format("KnowledgeSnapshot: %d player snapshots cached", SNAPSHOTS.size());
     }
 }
-
