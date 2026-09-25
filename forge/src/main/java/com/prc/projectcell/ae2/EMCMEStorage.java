@@ -230,17 +230,18 @@ public class EMCMEStorage implements StorageCell {
         ItemInfo info = ItemInfo.fromStack(stack);
         long itemValue = EMCValueCache.getValue(info);
         if (itemValue <= 0L) {
-           return 0L;
+            return 0L;
         }
 
         ItemInfo persistent = IEMCProxy.INSTANCE.getPersistentInfo(info);
-        if (!ItemStack.isSameItemSameTags(stack, persistent.createStack())) {
-           return 0L;
+        // Check if the persistent ItemInfo has value (this normalizes NBT differences)
+        if (EMCValueCache.getValue(persistent) <= 0L) {
+            return 0L;
         }
 
         IKnowledgeProvider provider = ProjectEUtil.getKnowledgeProvider(this.owner);
-        if (provider == null || !provider.hasKnowledge(stack)) {
-           return 0L;
+        if (provider == null || !provider.hasKnowledge(persistent.createStack())) {
+            return 0L;
         }
 
         BigInteger playerEmc = provider.getEmc();
@@ -317,4 +318,3 @@ public class EMCMEStorage implements StorageCell {
       return Component.translatable("projectcell.ae2.emc_storage_description");
    }
 }
-

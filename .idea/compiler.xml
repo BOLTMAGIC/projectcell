@@ -4,15 +4,9 @@
     <bytecodeTargetLevel>
       <module name="forge_main" target="17" />
       <module name="forge_test" target="17" />
-      <module name="projectcell" target="17" />
       <module name="projectcell.common" target="17" />
       <module name="projectcell.common.main" target="17" />
       <module name="projectcell.common.test" target="17" />
-      <module name="projectcell.forge" target="17" />
-      <module name="projectcell.forge.main" target="17" />
-      <module name="projectcell.forge.test" target="17" />
-      <module name="projectcell.main" target="17" />
-      <module name="projectcell.test" target="17" />
       <module name="projectcell_main" target="17" />
       <module name="projectcell_test" target="17" />
     </bytecodeTargetLevel>
@@ -28,8 +22,8 @@
       <module name="projectcell.common.main" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\common\build\classes\java\main\projectcell-common-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\common\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40359-v2.main.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40359-v2\mappings.tiny" />
       <module name="projectcell.common.test" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\common\build\classes\java\test\test-projectcell-common-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\common\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40359-v2.test.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40359-v2\mappings.tiny" />
       <module name="projectcell.forge" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\forge\build\classes\java\main\projectcell-forge-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\forge\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20.main.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20\mappings-mixin-srg.tiny" />
-      <module name="projectcell.forge.main" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\forge\build\classes\java\main\projectcell-forge-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\forge\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40359-v2-forge-1.20.1-47.4.20.main.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40359-v2-forge-1.20.1-47.4.20\mappings-mixin-srg.tiny" />
-      <module name="projectcell.forge.test" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\forge\build\classes\java\test\test-projectcell-forge-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\forge\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40359-v2-forge-1.20.1-47.4.20.test.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40359-v2-forge-1.20.1-47.4.20\mappings-mixin-srg.tiny" />
+      <module name="projectcell.forge.main" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\forge\build\classes\java\main\projectcell-forge-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\forge\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20.main.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20\mappings-mixin-srg.tiny" />
+      <module name="projectcell.forge.test" options="-Xlint:-deprecation -Xlint:-removal -AoutRefMapFile=C:\Users\Admin\IdeaProjects\projectcell\forge\build\classes\java\test\test-projectcell-forge-refmap.json -AdefaultObfuscationEnv=named:intermediary -Aquiet=true -AoutMapFileNamedIntermediary=C:\Users\Admin\IdeaProjects\projectcell\forge\build\loom-cache\mixin-map-loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20.test.tiny -AinMapFileNamedIntermediary=C:\Users\Admin\.gradle\caches\fabric-loom\1.20.1\loom.mappings.1_20_1.layered+hash.40545-v2-forge-1.20.1-47.4.20\mappings-mixin-srg.tiny" />
       <module name="projectcell.main" options="-Xlint:-deprecation -Xlint:-removal" />
       <module name="projectcell.test" options="-Xlint:-deprecation -Xlint:-removal" />
       <module name="projectcell_main" options="-Xlint:-deprecation -Xlint:-removal" />
