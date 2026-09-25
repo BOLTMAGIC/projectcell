@@ -24,8 +24,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public class EMCMEStorage implements StorageCell {
-   private static final long MAX_CELL_COUNT = 2147483647L;
-
    // ===== CACHING LAYER ======
    // Cache for ItemInfo -> AEItemKey to reduce AEItemKey.of() overhead
    // WeakHashMap ensures ItemInfo garbage collection
@@ -33,24 +31,9 @@ public class EMCMEStorage implements StorageCell {
    private static final int KEY_CACHE_MAX_SIZE = 1024;
    private static int cacheClears = 0;
 
-   // Pagination support for large knowledge sets
-   private static final Map<String, PaginationState> PAGINATION_STATES = new WeakHashMap<>();
-
    private final UUID owner;
    private final boolean nbtFilter;
 
-    /**
-    * Inner class to track pagination state per player
-    */
-   private static class PaginationState {
-      KnowledgeIterator iterator;
-      long lastUpdateTime;
-
-      PaginationState(KnowledgeIterator iterator) {
-         this.iterator = iterator;
-         this.lastUpdateTime = System.currentTimeMillis();
-      }
-   }
    private static long limit() {
       return Config.SERVER.spec.isLoaded() && !Config.SERVER.limitItemCount.get() ? Long.MAX_VALUE : 2147483647L;
 
@@ -199,18 +182,20 @@ public class EMCMEStorage implements StorageCell {
        if (provider == null) {
           return 0L;
        }
+       // Refuse items that would give no EMC, otherwise they are accepted and voided.
+       long sellValue = IEMCProxy.INSTANCE.getSellValue(singleStack);
+       if (sellValue <= 0L) {
+          return 0L;
+       }
        if (mode == Actionable.MODULATE) {
-          long sellValue = IEMCProxy.INSTANCE.getSellValue(singleStack);
-          if (sellValue > 0L) {  // Early exit if sell value is 0
-             BigInteger totalValue = BigInteger.valueOf(sellValue).multiply(BigInteger.valueOf(amount));
-             provider.setEmc(provider.getEmc().add(totalValue));
-             ServerPlayer player = ProjectEUtil.getPlayer(this.owner);
-             if (player != null) {
-                if (provider.addKnowledge(singleStack)) {
-                   provider.syncKnowledgeChange(player, IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(singleStack)), true);
-                }
-                provider.syncEmc(player);
+          BigInteger totalValue = BigInteger.valueOf(sellValue).multiply(BigInteger.valueOf(amount));
+          provider.setEmc(provider.getEmc().add(totalValue));
+          ServerPlayer player = ProjectEUtil.getPlayer(this.owner);
+          if (player != null) {
+             if (provider.addKnowledge(singleStack)) {
+                provider.syncKnowledgeChange(player, IEMCProxy.INSTANCE.getPersistentInfo(ItemInfo.fromStack(singleStack)), true);
              }
+             provider.syncEmc(player);
           }
        }
        return amount;
@@ -277,39 +262,17 @@ public class EMCMEStorage implements StorageCell {
               return;
            }
 
-           // ONE-PASS OPTIMIZATION: Compute everything once at snapshot creation
-           // Then reuse all values - eliminates duplicate work!
+           // Per-item data is cached until the player's knowledge or the EMC mapping changes;
+           // only the counts depend on the live EMC balance.
            KnowledgeSnapshot.CachedSnapshot snapshot =
               KnowledgeSnapshot.getOrCreateSnapshot(this.owner, provider, this.nbtFilter);
 
-           // Iterate through snapshot (all values pre-computed)
-           for (ItemInfo info : snapshot.itemData.keySet()) {
-              KnowledgeSnapshot.ComputedItemData data = snapshot.itemData.get(info);
-
-              if (data == null || data.emcValue() <= 0L) {
-                 continue;
-              }
-
-              // All these are ALREADY COMPUTED - just retrieve
-              // No duplicate getValue() or createKey() calls!
-              long itemValue = data.emcValue();
-              AEItemKey key = data.key();
-              boolean blocked = data.isBlocked();
-
-              // Skip if blocked
-              if (blocked) {
-                 continue;
-              }
-
-              // Calculate available count using safe arithmetic
-              long maxCount = SafeLongArithmetic.safeDivide(playerEmc, itemValue);
+           for (KnowledgeSnapshot.ComputedItemData data : snapshot.items) {
+              long maxCount = SafeLongArithmetic.safeDivide(playerEmc, data.emcValue());
               if (maxCount <= 0L) {
                  continue;
               }
-
-              // Clamp to limit
-              long stackCount = Math.min(maxCount, lim);
-              out.add(key, stackCount);
+              out.add(data.key(), Math.min(maxCount, lim));
            }
         }
      }

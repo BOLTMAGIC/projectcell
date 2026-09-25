@@ -63,4 +63,11 @@ dependencies {
 
     modRuntimeOnly "curse.maven:jei-238222:8677648"
     modRuntimeOnly "curse.maven:project-expansion-579177:7247734"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+    useJUnitPlatform()
 }

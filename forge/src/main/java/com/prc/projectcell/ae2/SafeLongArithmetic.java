@@ -36,8 +36,10 @@ public class SafeLongArithmetic {
             return dividend.longValue() / divisor;
         }
 
-        // Fallback: use BigInteger arithmetic
-        return dividend.divide(BigInteger.valueOf(divisor)).longValue();
+        // Fallback: use BigInteger arithmetic. The quotient can exceed Long.MAX_VALUE
+        // (e.g. 1-EMC items with a huge EMC balance); longValue() would silently keep
+        // only the low 64 bits, so clamp instead.
+        return toLongSafe(dividend.divide(BigInteger.valueOf(divisor)));
     }
 
     /**
@@ -84,7 +86,7 @@ public class SafeLongArithmetic {
             return safeDivide(dividend, divisor.longValue());
         }
         // Both large: use BigInteger arithmetic
-        return dividend.divide(divisor).longValue();
+        return toLongSafe(dividend.divide(divisor));
     }
 }
 
