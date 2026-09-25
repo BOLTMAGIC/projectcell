@@ -40,7 +40,9 @@ public class EMCValueCache {
      * Clear cache if needed
      */
     public static void clearCache() {
-        // Auto-clearing in FastHashMap - no manual action needed
+        // Called once per second by ServerTickEventListener. Without this, values stay
+        // stale after ProjectE remaps EMC (e.g. /reload) until the map happens to fill up.
+        VALUE_CACHE.clear();
     }
 
     /**
