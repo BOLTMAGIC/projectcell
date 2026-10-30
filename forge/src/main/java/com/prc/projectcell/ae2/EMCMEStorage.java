@@ -206,7 +206,9 @@ public class EMCMEStorage implements StorageCell {
         if (!(what instanceof AEItemKey itemKey) || amount <= 0L) {
            return 0L;
         }
-        if (this.nbtFilter && isBlocked(itemKey)) {
+        // Only hand out the NBT forms getAvailableStacks() lists. A request with extra NBT (e.g. a
+        // pick-blocked Mekanism machine holding upgrades) would otherwise be created for the bare item's EMC.
+        if (this.nbtFilter ? isBlocked(itemKey) : hasNonPersistentNbt(itemKey)) {
            return 0L;
         }
 
